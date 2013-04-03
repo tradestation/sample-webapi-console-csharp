@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SymbolSuggestDemo.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="APIKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">your key goes here</Value>
+    </Setting>
+    <Setting Name="APISecret" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">your secret goes here</Value>
+    </Setting>
+    <Setting Name="RedirectUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">your redirect URI goes here</Value>
+    </Setting>
+    <Setting Name="Environment" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Can be "SIM" or "LIVE"</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
