@@ -10,13 +10,9 @@ namespace SymbolSuggestDemo
     public class TradeStationWebApi
     {
         private string Key { get; set; }
-
         private string Secret { get; set; }
-
         private string Host { get; set; }
-
         private string RedirectUri { get; set; }
-
         private AccessToken Token { get; set; }
 
         public TradeStationWebApi(string key, string secret, string environment, string redirecturi)
@@ -28,8 +24,25 @@ namespace SymbolSuggestDemo
             if (environment.Equals("LIVE")) this.Host = "https://api.tradestation.com/v2";
             if (environment.Equals("SIM")) this.Host = "https://sim.api.tradestation.com/v2";
 
-            var authcode = GetAuthorizationCode();
-            this.Token = GetAccessToken(authcode);
+            this.Token = GetAccessToken(GetAuthorizationCode());
+        }
+
+        private string GetAuthorizationCode()
+        {
+            Console.WriteLine("Go here and login:");
+            Console.WriteLine(string.Format("{0}/{1}", this.Host,
+                                            string.Format(
+                                                "authorize?client_id={0}&response_type=code&redirect_uri={1}",
+                                                this.Key,
+                                                this.RedirectUri)));
+            Console.WriteLine("Paste in the authorization code here");
+
+            // Increase Console.ReadLine Input Limit for AuthCode: http://blog.aggregatedintelligence.com/2009/06/consolereadline-and-buffer-size-limits.html
+            var inputStream = Console.OpenStandardInput(1024);
+            var bytes = new byte[1024];
+            var outputLength = inputStream.Read(bytes, 0, 1024);
+            var chars = Encoding.UTF8.GetChars(bytes, 0, outputLength);
+            return (new string(chars)).Trim();
         }
 
         private AccessToken GetAccessToken(string authcode)
@@ -67,7 +80,7 @@ namespace SymbolSuggestDemo
             }
         }
 
-        private T GetDeserializedResponse<T>(HttpWebRequest request)
+        private static T GetDeserializedResponse<T>(WebRequest request)
         {
             var response = request.GetResponse() as HttpWebResponse;
             var receiveStream = response.GetResponseStream();
@@ -78,26 +91,8 @@ namespace SymbolSuggestDemo
             readStream.Close();
             return json;
         }
-
-        private string GetAuthorizationCode()
-        {
-            Console.WriteLine("Go here and login:");
-            Console.WriteLine(string.Format("{0}/{1}", this.Host,
-                                            string.Format(
-                                                "authorize?client_id={0}&response_type=code&redirect_uri={1}",
-                                                this.Key,
-                                                this.RedirectUri)));
-            Console.WriteLine("Paste in the authorization code here");
-
-            // http://blog.aggregatedintelligence.com/2009/06/consolereadline-and-buffer-size-limits.html
-            var inputStream = Console.OpenStandardInput(1024);
-            var bytes = new byte[1024];
-            var outputLength = inputStream.Read(bytes, 0, 1024);
-            var chars = Encoding.UTF8.GetChars(bytes, 0, outputLength);
-            return (new string(chars)).Trim();
-        }
-
-        internal List<Symbol> SymbolSuggest(string suggestText)
+        
+        internal IEnumerable<Symbol> SymbolSuggest(string suggestText)
         {
             var resourceUri = new Uri(string.Format("{0}/{1}/{2}?oauth_token={3}", this.Host, "data/symbols/suggest", suggestText, this.Token.access_token));
 
@@ -108,7 +103,7 @@ namespace SymbolSuggestDemo
 
             try
             {
-                return GetDeserializedResponse<List<Symbol>>(request);
+                return GetDeserializedResponse<IEnumerable<Symbol>>(request);
             }
             catch (Exception ex)
             {
