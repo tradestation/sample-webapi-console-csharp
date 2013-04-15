@@ -12,6 +12,14 @@ namespace SymbolSuggestDemo
                 Properties.Settings.Default.Environment,
                 Properties.Settings.Default.RedirectUri);
 
+            // GetUserAccounts
+            var accounts = api.GetUserAccounts();
+            foreach (var account in accounts)
+            {
+                Console.WriteLine(account.Key);
+            }
+
+            // SymbolSuggest
             Console.Write("Enter symbol: ");
             var suggestText = Console.ReadLine();
             var symbols = api.SymbolSuggest(suggestText);

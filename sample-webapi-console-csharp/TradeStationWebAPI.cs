@@ -114,5 +114,29 @@ namespace SymbolSuggestDemo
             }
 
         }
+
+        internal IEnumerable<AccountInfo> GetUserAccounts()
+        {
+            var resourceUri =
+                new Uri(string.Format("{0}/users/{1}/accounts?oauth_token={2}", this.Host, this.Token.userid,
+                                      this.Token.access_token));
+
+            Console.WriteLine("Getting Accounts");
+
+            var request = WebRequest.Create(resourceUri) as HttpWebRequest;
+            request.Method = "GET";
+
+            try
+            {
+                return GetDeserializedResponse<IEnumerable<AccountInfo>>(request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(-1);
+                throw;
+            }
+        }
     }
 }
