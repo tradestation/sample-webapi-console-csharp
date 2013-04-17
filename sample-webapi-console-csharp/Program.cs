@@ -29,6 +29,11 @@ namespace SymbolSuggestDemo
             {
                 Console.WriteLine(symbol.Name);
             }
+
+            // GetQuoteChanges
+            Console.Write("Enter symbol to stream: ");
+            var symbolsCommaDelimited = Console.ReadLine();
+            api.GetQuoteChanges(symbolsCommaDelimited);
             Console.ReadLine();
         }
     }

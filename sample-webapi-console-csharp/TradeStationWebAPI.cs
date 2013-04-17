@@ -91,7 +91,7 @@ namespace SymbolSuggestDemo
             readStream.Close();
             return json;
         }
-        
+
         internal IEnumerable<Symbol> SymbolSuggest(string suggestText)
         {
             var resourceUri = new Uri(string.Format("{0}/{1}/{2}?oauth_token={3}", this.Host, "data/symbols/suggest", suggestText, this.Token.access_token));
@@ -129,6 +129,43 @@ namespace SymbolSuggestDemo
             try
             {
                 return GetDeserializedResponse<IEnumerable<AccountInfo>>(request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(-1);
+                throw;
+            }
+        }
+
+        internal void GetQuoteChanges(string symbols)
+        {
+            var resourceUri =
+                new Uri(string.Format("{0}/stream/quote/changes/{1}?oauth_token={2}", this.Host, symbols,
+                                      this.Token.access_token));
+
+            Console.WriteLine("Streaming Quote/Changes");
+
+            var request = WebRequest.Create(resourceUri) as HttpWebRequest;
+            request.Method = "GET";
+
+            try
+            {
+                using (var response = request.GetResponse() as HttpWebResponse)
+                {
+                    using (var readStream = new StreamReader(response.GetResponseStream(), Encoding.UTF8, false, 4096))
+                    {
+                        var ser = new JavaScriptSerializer();
+                        while (true)
+                        {
+                            var line = readStream.ReadLine();
+                            if (line == null) break;
+                            var quote = ser.Deserialize<Quote>(line);
+                            Console.WriteLine(String.Format("{0}: ASK = {1}; BID = {2}", quote.Symbol, quote.Ask, quote.Bid));
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

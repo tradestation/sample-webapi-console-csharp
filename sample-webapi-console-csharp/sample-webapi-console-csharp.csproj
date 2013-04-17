@@ -53,6 +53,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Quote.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="TradeStationWebAPI.cs" />
   </ItemGroup>
