@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -166,6 +167,31 @@ namespace SymbolSuggestDemo
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(-1);
+                throw;
+            }
+        }
+
+        public IEnumerable<OrderDetail> GetOrders(IEnumerable<int> accountKeys)
+        {
+            var resourceUri =
+                new Uri(string.Format("{0}/accounts/{1}/orders?oauth_token={2}", this.Host,
+                                      String.Join(",", accountKeys),
+                                      this.Token.access_token));
+
+            Console.WriteLine("Getting Orders");
+
+            var request = WebRequest.Create(resourceUri) as HttpWebRequest;
+            request.Method = "GET";
+
+            try
+            {
+                return GetDeserializedResponse<IEnumerable<OrderDetail>>(request);
             }
             catch (Exception ex)
             {

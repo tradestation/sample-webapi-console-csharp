@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SymbolSuggestDemo
 {
@@ -18,6 +19,23 @@ namespace SymbolSuggestDemo
             {
                 Console.WriteLine("Key: {0}\t\tName: {1}\t\tType: {2}\t\tTypeDescription: {3}",
                                   account.Key, account.Name, account.Type, account.TypeDescription);
+            }
+
+            // Get Orders
+            var orders = api.GetOrders(accounts.Select(account => account.Key));
+            if (!orders.Any())
+            {
+                Console.WriteLine("No Orders to Display");
+            }
+            else
+            {
+                Console.WriteLine("Order Requests:");
+                foreach (var orderDetail in orders)
+                {
+                    Console.WriteLine("Account ID: {0}\t\tOrder ID: {1}\t\tSymbol: {2}\t\tQuantity: {3}\t\tStatus: {4}",
+                                      orderDetail.AccountID, orderDetail.OrderID, orderDetail.Symbol,
+                                      orderDetail.Quantity, orderDetail.Status);
+                }
             }
 
             // SymbolSuggest
