@@ -12,11 +12,12 @@ namespace SymbolSuggestDemo
                 Properties.Settings.Default.Environment,
                 Properties.Settings.Default.RedirectUri);
 
-            // GetUserAccounts
+            // Get Accounts
             var accounts = api.GetUserAccounts();
             foreach (var account in accounts)
             {
-                Console.WriteLine(account.Key);
+                Console.WriteLine("Key: {0}\t\tName: {1}\t\tType: {2}\t\tTypeDescription: {3}",
+                                  account.Key, account.Name, account.Type, account.TypeDescription);
             }
 
             // SymbolSuggest
