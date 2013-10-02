@@ -273,5 +273,40 @@ namespace SymbolSuggestDemo
                 throw;
             }
         }
+
+        public IEnumerable<OrderResult> PlaceOrder(Order order)
+        {
+            var serializer = new JavaScriptSerializer();
+            var orderjson = serializer.Serialize(order);
+
+            var resourceUri =
+                new Uri(string.Format("{0}/orders?oauth_token={1}", this.Host, this.Token.access_token));
+
+            Console.WriteLine("Placing Order");
+
+            var request = WebRequest.Create(resourceUri) as HttpWebRequest;
+            request.Method = "POST";
+            var postData = orderjson;
+            var byteArray = Encoding.UTF8.GetBytes(postData);
+
+            request.ContentType = "application/json";
+            request.ContentLength = byteArray.Length;
+
+            var dataStream = request.GetRequestStream();
+            dataStream.Write(byteArray, 0, byteArray.Length);
+            dataStream.Close();
+
+            try
+            {
+                return GetDeserializedResponse<IEnumerable<OrderResult>>(request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(-1);
+                throw;
+            }
+        }
     }
 }

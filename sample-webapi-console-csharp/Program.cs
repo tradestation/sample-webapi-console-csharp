@@ -81,6 +81,11 @@ namespace SymbolSuggestDemo
                 Console.WriteLine("SummaryMessage: {0}", confirmation.SummaryMessage);
             }
 
+            // Place an Order
+            var orderResults = api.PlaceOrder(order).ToArray();
+            Console.WriteLine("Message: {0}\t\tStatus Code: {1}", orderResults.First().Message,
+                              orderResults.First().StatusCode);
+
             // GetQuoteChanges
             Console.Write("Enter symbol to stream: ");
             var symbolsCommaDelimited = Console.ReadLine();
