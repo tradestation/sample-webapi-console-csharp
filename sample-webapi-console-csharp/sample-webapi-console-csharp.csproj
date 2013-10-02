@@ -47,7 +47,10 @@
   <ItemGroup>
     <Compile Include="AccessToken.cs" />
     <Compile Include="AccountInfo.cs" />
+    <Compile Include="AdvancedOptions.cs" />
+    <Compile Include="GroupOrder.cs" />
     <Compile Include="Leg.cs" />
+    <Compile Include="Order.cs" />
     <Compile Include="OrderDetail.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="Quote.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="TradeStationWebAPI.cs" />
+    <Compile Include="TrailingStop.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

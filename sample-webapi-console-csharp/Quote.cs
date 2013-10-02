@@ -1,4 +1,6 @@
-﻿namespace SymbolSuggestDemo
+﻿using System.Collections.Generic;
+
+namespace SymbolSuggestDemo
 {
     public class Quote
     {
@@ -50,6 +52,30 @@
         public bool IsDelayed { get; set; }                
         public int CurrencyCode { get; set; }
         public int ContractExpireDate { get; set; }
-        public int ExchangeID { get; set; }
+        public int ExchangeID { get; set; }        
+    }
+
+    public static class QuoteExtensions
+    {
+        public static string ToOrderAssetType(this string quoteAssetType)
+        {
+            if (quoteAssetType.Equals("STOCK") || quoteAssetType.Equals("EQUITY"))
+            {
+                return "EQ";
+            }
+            if (quoteAssetType.Equals("FUTURE"))
+            {
+                return "FU";
+            }
+            if (quoteAssetType.Equals("FOREX"))
+            {
+                return "FX";
+            }
+            if (quoteAssetType.Equals("OPTION"))
+            {
+                return "OP";
+            }
+            return quoteAssetType;
+        }
     }
 }

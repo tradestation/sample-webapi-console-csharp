@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SymbolSuggestDemo
@@ -50,15 +51,24 @@ namespace SymbolSuggestDemo
             }
 
             // Get Quotes
-            Console.Write("Provide a list of symbols to retrieve quotes (example: MSFT,GOOG):");
+            Console.Write("Provide a list of symbols to retrieve quotes (example: MSFT,GOOG): ");
             var symbols = Console.ReadLine();
-            var quotes = api.GetQuotes(symbols.Split(','));
+            var quotes = api.GetQuotes(symbols.Split(',')).ToArray();
             foreach (var quote in quotes)
             {
                 Console.WriteLine("Symbol: {0}\t\tLast: {1}\t\tLastPriceDisplay: {2}\t\t" +
                                   "CountryCode: {3}\t\tCurrency: {4}\t\tAsset Type: {5}", quote.Symbol, quote.Last.ToString("C"),
                                   quote.LastPriceDisplay, quote.CountryCode, quote.Currency, quote.AssetType);
-            }            
+            }
+
+            // New-up an order
+            var order = new Order(quotes.First().Description, null, quotes.First().AssetType.ToOrderAssetType(),
+                                  quotes.First().Symbol, "1",
+                                  quotes.First().LastPriceDisplay, null, "Limit", "Intelligent", "DAY",
+                                  accounts.Select(account => account.Key).First(), "", "buy", true, null,
+                                  new List<GroupOrder>());
+            Console.WriteLine("Trying to place an order of {0} share of {1} at {2}", order.Quantity, order.Symbol,
+                              order.LimitPrice);
 
             // GetQuoteChanges
             Console.Write("Enter symbol to stream: ");
