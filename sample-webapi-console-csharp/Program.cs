@@ -86,6 +86,23 @@ namespace SymbolSuggestDemo
             Console.WriteLine("Message: {0}\t\tStatus Code: {1}", orderResults.First().Message,
                               orderResults.First().StatusCode);
 
+            // Check Order Status
+            orders = api.GetOrders(accounts.Select(account => account.Key)).ToArray();
+            if (!orders.Any())
+            {
+                Console.WriteLine("No Orders to Display");
+            }
+            else
+            {
+                Console.WriteLine("Order Requests:");
+                foreach (var orderDetail in orders)
+                {
+                    Console.WriteLine("Account ID: {0}\t\tOrder ID: {1}\t\tSymbol: {2}\t\tQuantity: {3}\t\tStatus: {4}",
+                                      orderDetail.AccountID, orderDetail.OrderID, orderDetail.Symbol,
+                                      orderDetail.Quantity, orderDetail.Status);
+                }
+            }
+
             // GetQuoteChanges
             Console.Write("Enter symbol to stream: ");
             var symbolsCommaDelimited = Console.ReadLine();
