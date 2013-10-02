@@ -5,7 +5,7 @@ namespace SymbolSuggestDemo
 {
     static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var api = new TradeStationWebApi(
                 Properties.Settings.Default.APIKey,
@@ -14,7 +14,7 @@ namespace SymbolSuggestDemo
                 Properties.Settings.Default.RedirectUri);
 
             // Get Accounts
-            var accounts = api.GetUserAccounts();
+            var accounts = api.GetUserAccounts().ToArray();
             foreach (var account in accounts)
             {
                 Console.WriteLine("Key: {0}\t\tName: {1}\t\tType: {2}\t\tTypeDescription: {3}",
@@ -22,7 +22,7 @@ namespace SymbolSuggestDemo
             }
 
             // Get Orders
-            var orders = api.GetOrders(accounts.Select(account => account.Key));
+            var orders = api.GetOrders(accounts.Select(account => account.Key)).ToArray();
             if (!orders.Any())
             {
                 Console.WriteLine("No Orders to Display");
