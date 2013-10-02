@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
 using System.Web.Script.Serialization;
 
 namespace SymbolSuggestDemo
@@ -192,6 +194,38 @@ namespace SymbolSuggestDemo
             try
             {
                 return GetDeserializedResponse<IEnumerable<OrderDetail>>(request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(-1);
+                throw;
+            }
+        }
+
+        public IEnumerable<Quote> GetQuotes(IEnumerable<string> symbols)
+        {
+            // encode symbols (eg: replace " " with "%20")
+            var encodedSymbols = symbols.Select(symbol =>
+                {
+                    var urlEncode = HttpUtility.UrlEncode(symbol);
+                    return urlEncode != null ? urlEncode.Replace("+", "%20") : null;
+                });
+
+            var resourceUri =
+                new Uri(string.Format("{0}/data/quote/{1}?oauth_token={2}", this.Host,
+                                      String.Join(",", encodedSymbols),
+                                      this.Token.access_token));
+
+            Console.WriteLine("Getting Quotes");
+
+            var request = WebRequest.Create(resourceUri) as HttpWebRequest;
+            request.Method = "GET";
+
+            try
+            {
+                return GetDeserializedResponse<IEnumerable<Quote>>(request);
             }
             catch (Exception ex)
             {

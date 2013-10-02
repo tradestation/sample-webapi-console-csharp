@@ -41,13 +41,24 @@ namespace SymbolSuggestDemo
             // SymbolSuggest
             Console.Write("Enter symbol: ");
             var suggestText = Console.ReadLine();
-            var symbols = api.SymbolSuggest(suggestText);
+            var symbolsSuggested = api.SymbolSuggest(suggestText);
             Console.WriteLine("Results:");
             Console.WriteLine();
-            foreach (var symbol in symbols)
+            foreach (var symbol in symbolsSuggested)
             {
                 Console.WriteLine(symbol.Name);
             }
+
+            // Get Quotes
+            Console.Write("Provide a list of symbols to retrieve quotes (example: MSFT,GOOG):");
+            var symbols = Console.ReadLine();
+            var quotes = api.GetQuotes(symbols.Split(','));
+            foreach (var quote in quotes)
+            {
+                Console.WriteLine("Symbol: {0}\t\tLast: {1}\t\tLastPriceDisplay: {2}\t\t" +
+                                  "CountryCode: {3}\t\tCurrency: {4}\t\tAsset Type: {5}", quote.Symbol, quote.Last.ToString("C"),
+                                  quote.LastPriceDisplay, quote.CountryCode, quote.Currency, quote.AssetType);
+            }            
 
             // GetQuoteChanges
             Console.Write("Enter symbol to stream: ");
