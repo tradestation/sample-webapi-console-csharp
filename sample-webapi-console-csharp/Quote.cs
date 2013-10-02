@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SymbolSuggestDemo
+﻿namespace SymbolSuggestDemo
 {
     public class Quote
     {
