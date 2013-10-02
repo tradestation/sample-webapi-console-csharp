@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -89,10 +88,14 @@ namespace SymbolSuggestDemo
             var receiveStream = response.GetResponseStream();
             var readStream = new StreamReader(receiveStream, Encoding.UTF8);
             var ser = new JavaScriptSerializer();
-            var json = ser.Deserialize<T>(readStream.ReadToEnd());
+            var json = readStream.ReadToEnd();
+            var scrubbedJson =
+                json.Replace(
+                    "\"__type\":\"EquitiesOptionsOrderConfirmation:#TradeStation.Web.Services.DataContracts\",", ""); // hack
+            var deserializaed = ser.Deserialize<T>(scrubbedJson);
             response.Close();
             readStream.Close();
-            return json;
+            return deserializaed;
         }
 
         internal IEnumerable<Symbol> SymbolSuggest(string suggestText)
@@ -226,6 +229,41 @@ namespace SymbolSuggestDemo
             try
             {
                 return GetDeserializedResponse<IEnumerable<Quote>>(request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(-1);
+                throw;
+            }
+        }
+
+        public IEnumerable<Confirmation> GetConfirmations(Order order)
+        {
+            var serializer = new JavaScriptSerializer();
+            var orderjson = serializer.Serialize(order);
+
+            var resourceUri =
+                new Uri(string.Format("{0}/orders/confirm?oauth_token={1}", this.Host, this.Token.access_token));
+
+            Console.WriteLine("Getting Order Confirmation");
+
+            var request = WebRequest.Create(resourceUri) as HttpWebRequest;
+            request.Method = "POST";
+            var postData = orderjson;
+            var byteArray = Encoding.UTF8.GetBytes(postData);
+
+            request.ContentType = "application/json";
+            request.ContentLength = byteArray.Length;
+
+            var dataStream = request.GetRequestStream();
+            dataStream.Write(byteArray, 0, byteArray.Length);
+            dataStream.Close();
+
+            try
+            {
+                return GetDeserializedResponse<IEnumerable<Confirmation>>(request);
             }
             catch (Exception ex)
             {

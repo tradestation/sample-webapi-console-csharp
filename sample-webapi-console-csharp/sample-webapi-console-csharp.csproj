@@ -48,6 +48,7 @@
     <Compile Include="AccessToken.cs" />
     <Compile Include="AccountInfo.cs" />
     <Compile Include="AdvancedOptions.cs" />
+    <Compile Include="Confirmation.cs" />
     <Compile Include="GroupOrder.cs" />
     <Compile Include="Leg.cs" />
     <Compile Include="Order.cs" />

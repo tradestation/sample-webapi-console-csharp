@@ -70,6 +70,17 @@ namespace SymbolSuggestDemo
             Console.WriteLine("Trying to place an order of {0} share of {1} at {2}", order.Quantity, order.Symbol,
                               order.LimitPrice);
 
+            // Get Order Confirmation
+            var confirmation = api.GetConfirmations(order).First();
+            if (confirmation.StatusCode != null && confirmation.StatusCode.Equals("400"))
+            {
+                Console.WriteLine("Message: {0}\t\tStatus Code: {1}", confirmation.Message, confirmation.StatusCode);
+            }
+            else
+            {
+                Console.WriteLine("SummaryMessage: {0}", confirmation.SummaryMessage);
+            }
+
             // GetQuoteChanges
             Console.Write("Enter symbol to stream: ");
             var symbolsCommaDelimited = Console.ReadLine();
