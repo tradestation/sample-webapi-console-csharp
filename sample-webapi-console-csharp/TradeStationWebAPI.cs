@@ -37,14 +37,27 @@ namespace SymbolSuggestDemo
                                                 "authorize?client_id={0}&response_type=code&redirect_uri={1}",
                                                 this.Key,
                                                 this.RedirectUri)));
-            Console.WriteLine("Paste in the authorization code here");
 
-            // Increase Console.ReadLine Input Limit for AuthCode: http://blog.aggregatedintelligence.com/2009/06/consolereadline-and-buffer-size-limits.html
-            var inputStream = Console.OpenStandardInput(1024);
-            var bytes = new byte[1024];
-            var outputLength = inputStream.Read(bytes, 0, 1024);
-            var chars = Encoding.UTF8.GetChars(bytes, 0, outputLength);
-            return (new string(chars)).Trim();
+            using (var listener = new HttpListener())
+            {
+                listener.Prefixes.Add(this.RedirectUri);
+                listener.Start();
+                Console.WriteLine("\nEmbedded HTTP Server is Listening for Authorization Code...");
+
+                var context = listener.GetContext();
+                var req = context.Request;
+                var res = context.Response;
+
+                var responseString = "<html><body><script>window.open('','_self').close();</script></body></html>";
+                var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                res.ContentLength64 = buffer.Length;
+                var output = res.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                output.Close();
+
+                listener.Stop();
+                return req.QueryString.Get("code");
+            }
         }
 
         private AccessToken GetAccessToken(string authcode)
