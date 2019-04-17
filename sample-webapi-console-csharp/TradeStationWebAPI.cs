@@ -25,6 +25,12 @@ namespace SymbolSuggestDemo
 
             if (environment.Equals("LIVE")) this.Host = "https://api.tradestation.com/v2";
             if (environment.Equals("SIM")) this.Host = "https://sim.api.tradestation.com/v2";
+            
+            // Disable Tls 1.0 and use Tls 1.2
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            // these two lines are only needed if .net 4.5 is not installed
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.DefaultConnectionLimit = 9999;
 
             this.Token = GetAccessToken(GetAuthorizationCode());
         }
